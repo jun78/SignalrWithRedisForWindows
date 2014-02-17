@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Chat Application</h2>
+
+
+ <div>
+        <input type="text" id="msg" /> 
+        <button type="button" id="send">Send</button>
+    </div>
+    <ul id="messages"></ul>
+
+    <script src="/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="/Scripts/jquery.signalR-2.0.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
+        (function () {
+
+            var chatHub = $.connection.chatHub,
+                msgContainer = $('#messages');
+
+            chatHub.client.messageReceived = function (msg) {
+                $('<li>').text(msg).appendTo(msgContainer);
+            };
+
+            $.connection.hub.start().done(function () {
+
+                $('#send').click(function () {
+                    var msg = $('#msg').val();
+                    chatHub.server.send(msg);
+                });
+            });
+        }());
+    </script>
